@@ -1,0 +1,28 @@
+title: Potential SharpHound/BloodHound SAMR Pipe Enumeration
+id: 7f3e1a2b-4c5d-4e6f-8a9b-0c1d2e3f4a5b
+status: experimental
+description: >
+  Detects access to the SAMR named pipe over IPC$, a common indicator of
+  domain enumeration tools like SharpHound (BloodHound's collector), which
+  query the SAM Remote Protocol to map users, groups, and trust relationships.
+references:
+  - https://attack.mitre.org/techniques/T1087/002/
+  - https://github.com/BloodHoundAD/SharpHound
+author: Muhammad Sudais
+date: 2026-08-31
+tags:
+  - attack.discovery
+  - attack.t1087.002
+  - attack.t1135
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    Event.System.EventID: 5145
+    Event.EventData.RelativeTargetName: 'samr'
+  condition: selection
+falsepositives:
+  - Legitimate domain administration tools (e.g., AD Users and Computers, PowerShell RSAT modules) may also access samr
+  - Backup or inventory software that enumerates domain objects
+level: high

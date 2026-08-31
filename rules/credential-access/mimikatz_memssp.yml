@@ -1,0 +1,26 @@
+title: Mimikatz Memssp Credential Logging via LSASS
+id: 9b2c4d6e-1a3f-4b5c-8d7e-2f1a3b4c5d6e
+status: experimental
+description: >
+  Detects LSASS creating a file named mimilsa.log, the default output file
+  used by Mimikatz's Memssp module. Memssp installs a rogue Security Support
+  Provider (SSP) into LSASS to capture plaintext credentials on every logon.
+references:
+  - https://attack.mitre.org/techniques/T1003/001/
+  - https://github.com/gentilkiwi/mimikatz/wiki/module-~-misc
+author: Muhammad Sudais
+date: 2026-08-31
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  category: file_event
+  product: windows
+detection:
+  selection:
+    Event.EventData.Image: 'C:\Windows\system32\lsass.exe'
+    Event.EventData.TargetFilename: 'C:\Windows\System32\mimilsa.log'
+  condition: selection
+falsepositives:
+  - Extremely unlikely; this exact filename is specific to Mimikatz Memssp
+level: critical

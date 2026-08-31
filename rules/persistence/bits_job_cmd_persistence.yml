@@ -1,0 +1,28 @@
+title: Suspicious BITS Job Targeting cmd.exe
+id: 3a5b7c9d-2e4f-4a6b-9c8d-1e3f5a7b9c2d
+status: experimental
+description: >
+  Detects a BITS (Background Intelligent Transfer Service) job whose transfer
+  URL points directly to cmd.exe. This is a known persistence/execution
+  technique (bitsadmin /SetNotifyCmdLine) where an attacker abuses BITS to
+  silently trigger command execution, often surviving reboots without a
+  traditional scheduled task or registry Run key.
+references:
+  - https://attack.mitre.org/techniques/T1197/
+  - https://docs.microsoft.com/en-us/windows/win32/bits/bits-jobs
+author: Muhammad Sudais
+date: 2026-08-31
+tags:
+  - attack.persistence
+  - attack.t1197
+logsource:
+  product: windows
+  service: bits-client
+detection:
+  selection:
+    Event.System.EventID: 59
+    Event.EventData.url|endswith: 'cmd.exe'
+  condition: selection
+falsepositives:
+  - Legitimate BITS jobs rarely target cmd.exe directly; investigate job name and creator for confirmation
+level: high

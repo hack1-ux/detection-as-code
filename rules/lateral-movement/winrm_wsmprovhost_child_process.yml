@@ -1,0 +1,26 @@
+title: Process Spawned by WinRM Host (wsmprovhost.exe)
+id: 5c7e9f1a-3b4d-4e6f-8a9c-0d1e2f3a4b5c
+status: experimental
+description: >
+  Detects any process spawned as a child of wsmprovhost.exe, the WinRM
+  (Windows Remote Management) host process. A remote PowerShell session
+  (Enter-PSSession, Invoke-Command) launches this process on the target;
+  any child process under it indicates commands executed via lateral
+  movement over WinRM.
+references:
+  - https://attack.mitre.org/techniques/T1021/006/
+author: Muhammad Sudais
+date: 2026-08-31
+tags:
+  - attack.lateral_movement
+  - attack.t1021.006
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Event.EventData.ParentImage|endswith: 'wsmprovhost.exe'
+  condition: selection
+falsepositives:
+  - Legitimate remote administration via PowerShell Remoting/WinRM by authorized admins
+level: medium
