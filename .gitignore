@@ -4,3 +4,4 @@ sample-logs/*.evtx
 __pycache__/
 *.pyc
 .DS_Store
+sample-logs/*chunk*

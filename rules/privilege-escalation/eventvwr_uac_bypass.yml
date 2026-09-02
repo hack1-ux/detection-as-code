@@ -1,0 +1,28 @@
+title: UAC Bypass via Eventvwr.exe Registry Hijack
+id: 7c9e1f3b-2a4d-4e6f-8b1c-3d5e7f9a1c3e
+status: experimental
+description: >
+  Detects a process (commonly powershell.exe or cmd.exe) spawned as a child
+  of eventvwr.exe. Eventvwr.exe auto-elevates without a UAC prompt; attackers
+  hijack the mscfile registry handler (HKCU\...\mscfile\shell\open\command)
+  so that when eventvwr.exe launches, it invokes the attacker's payload at
+  High integrity instead of a UAC dialog.
+references:
+  - https://attack.mitre.org/techniques/T1548/002/
+  - https://enigma0x3.net/2016/08/15/fileless-uac-bypass-using-eventvwr-exe-and-registry-hijacking/
+author: Muhammad Sudais
+date: 2026-09-02
+tags:
+  - attack.privilege_escalation
+  - attack.defense_evasion
+  - attack.t1548.002
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Event.EventData.ParentImage|endswith: '\eventvwr.exe'
+  condition: selection
+falsepositives:
+  - Legitimate use of Event Viewer rarely spawns child processes; investigate any hit
+level: high

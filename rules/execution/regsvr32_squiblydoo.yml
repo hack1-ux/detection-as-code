@@ -1,0 +1,31 @@
+title: Regsvr32 Squiblydoo Remote Scriptlet Execution
+id: 8d4e6f2a-5b7c-4a9d-8e1f-3a5c7e9b1d3f
+status: experimental
+description: >
+  Detects regsvr32.exe (potentially renamed, identified via file description
+  "Microsoft(C) Register Server") being invoked with the /i: flag pointing to
+  a remote URL. Known as "Squiblydoo", this technique abuses regsvr32's
+  scriptlet installation feature to download and execute code while bypassing
+  application whitelisting, since regsvr32 is a signed Microsoft binary.
+references:
+  - https://attack.mitre.org/techniques/T1218/010/
+  - https://www.trustedsec.com/blog/squiblydoo-continues-trend-of-attackers-using-native-tools/
+author: Muhammad Sudais
+date: 2026-09-02
+tags:
+  - attack.execution
+  - attack.defense_evasion
+  - attack.t1218.010
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Event.EventData.Description: 'Microsoft(C) Register Server'
+    Event.EventData.CommandLine|contains:
+      - '/i:http'
+      - '/i:https'
+  condition: selection
+falsepositives:
+  - Extremely rare; legitimate regsvr32 usage does not typically reference remote URLs
+level: critical

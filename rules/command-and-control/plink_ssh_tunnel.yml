@@ -1,0 +1,30 @@
+title: SSH Tunneling via Plink (PuTTY)
+id: 2b4d6e8f-1a3c-4e5b-9d7f-0a2c4e6f8b1d
+status: experimental
+description: >
+  Detects plink.exe (PuTTY's command-line SSH client) being used with port
+  forwarding flags (-R/-L) to establish an SSH tunnel. Attackers commonly
+  abuse plink to tunnel traffic such as RDP through an outbound SSH
+  connection, bypassing network egress controls and blending in as normal
+  encrypted SSH traffic.
+references:
+  - https://attack.mitre.org/techniques/T1572/
+  - https://www.chirag.io/2018/12/22/plink-detection/
+author: Muhammad Sudais
+date: 2026-09-02
+tags:
+  - attack.command_and_control
+  - attack.t1572
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Event.EventData.Image|endswith: '\plink.exe'
+    Event.EventData.CommandLine|contains:
+      - ' -R '
+      - ' -L '
+  condition: selection
+falsepositives:
+  - Legitimate administrative use of plink for authorized SSH tunneling by IT staff
+level: high

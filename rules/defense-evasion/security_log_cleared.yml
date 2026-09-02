@@ -1,0 +1,25 @@
+title: Windows Security Event Log Cleared
+id: 6f8a1c3e-4d5b-4e7f-9a1c-2b4d6e8f1a3c
+status: experimental
+description: >
+  Detects EventID 1102, generated when the Windows Security event log is
+  cleared. This is a common anti-forensics/defense evasion technique used
+  by attackers to erase evidence of prior activity after achieving their
+  objectives on a host.
+references:
+  - https://attack.mitre.org/techniques/T1070/001/
+author: Muhammad Sudais
+date: 2026-09-02
+tags:
+  - attack.defense_evasion
+  - attack.t1070.001
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    Event.System.EventID: 1102
+  condition: selection
+falsepositives:
+  - Legitimate log maintenance by administrators (should still be investigated/correlated with change management records)
+level: high
