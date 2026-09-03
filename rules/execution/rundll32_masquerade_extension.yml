@@ -1,0 +1,32 @@
+title: Rundll32 Loading Non-DLL Extension as Library
+id: 9e1c3a5d-7f2b-4c6e-8a0d-1c3e5f7a9b0d
+status: experimental
+description: >
+  Detects rundll32.exe invoked against a file with a non-standard/non-DLL
+  extension (e.g. .jpg, .png, .txt) followed by an exported function name.
+  Attackers rename malicious DLLs with benign-looking extensions to evade
+  file-type-based detection, then invoke them via rundll32's
+  "path,EntryPoint" calling convention. Frequently seen as a follow-on
+  stage after mshta.exe or a malicious document.
+references:
+  - https://attack.mitre.org/techniques/T1218/011/
+author: Muhammad Sudais
+date: 2026-09-04
+tags:
+  - attack.execution
+  - attack.defense_evasion
+  - attack.t1218.011
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Event.EventData.Image|endswith: '\rundll32.exe'
+  filter_legit_ext:
+    Event.EventData.CommandLine|contains:
+      - '.dll,'
+      - '.cpl,'
+  condition: selection and not filter_legit_ext
+falsepositives:
+  - Some legitimate software occasionally uses non-standard extensions for internal DLLs; verify file hash and origin
+level: high
