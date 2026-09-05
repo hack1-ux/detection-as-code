@@ -83,3 +83,13 @@ detection-as-code/
 
 Muhammad Sudais — Blue Team Cybersecurity Analyst, CEH
 [GitHub](https://github.com/hack1-ux) · [LinkedIn](https://linkedin.com/in/muhammad-sudais-a1b56625b)
+
+## Coverage Dashboard
+
+A Streamlit dashboard visualizes rule coverage across the MITRE ATT&CK matrix, including per-rule detection logic, severity, and false-positive notes.
+
+```bash
+pip install -r requirements.txt
+streamlit run dashboard.py
+```
+
