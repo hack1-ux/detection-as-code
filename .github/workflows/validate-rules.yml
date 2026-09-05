@@ -1,0 +1,30 @@
+name: Validate Sigma Rules
+
+on:
+  push:
+    paths:
+      - 'rules/**'
+      - 'validate_rules.py'
+      - '.github/workflows/validate-rules.yml'
+  pull_request:
+    paths:
+      - 'rules/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install pysigma pysigma-backend-opensearch
+
+      - name: Validate all Sigma rules
+        run: python validate_rules.py
